@@ -2,26 +2,73 @@ import UIKit
 
 
 struct Move: Codable {
-  let name: String
+  let moveName: String
+  let levelLearnedAt: Int
+  let moveLearnMethodName: String
+  let versionGroupName: String
   
   enum CodingKeys: String, CodingKey {
     case move
-  }
-  
-  enum MoveCodingKeys: String, CodingKey {
+    case versionGroupDetails = "version_group_details"
+    
     case name
+    
+    case levelLearnedAt = "level_learned_at"
+    case moveLearnMethod = "move_learn_method"
+    case versionGroup = "version_group"
+    
+  }
+  /*
+  enum MoveCodingKeys: String, CodingKey {
+    case moveName = "name"
   }
   
+  enum VersionGroupDetailsCodingKeys: String, CodingKey {
+    case levelLearnedAt = "level_learned_at"
+    case moveLearnMethod = "move_learn_method"
+    case versionGroup = "version_group"
+  }
+  
+  enum MoveLearnMethodCodingKeys: String, CodingKey {
+    case moveLearnMethodName = "name"
+  }
+  
+  enum VersionGroupCodingKeys: String, CodingKey {
+    case versionGroupName = "name"
+  }
+  */
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let moveContainer = try container.nestedContainer(keyedBy: MoveCodingKeys.self, forKey: .move)
-    self.name = try moveContainer.decode(String.self, forKey: .name)
+//    let moveContainer = try container.nestedContainer(keyedBy: MoveCodingKeys.self, forKey: .move)
+//    let versionGroupDetailsContainer = try container.nestedContainer(keyedBy: VersionGroupDetailsCodingKeys.self, forKey: .versionGroupDetails)
+//    let moveLearnMethodContainer = try versionGroupDetailsContainer.nestedContainer(keyedBy: MoveLearnMethodCodingKeys.self, forKey: .moveLearnMethod)
+//    let versionGroupContainer = try versionGroupDetailsContainer.nestedContainer(keyedBy: VersionGroupCodingKeys.self, forKey: .versionGroup)
+    let moveContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .move)
+    let versionGroupDetailsContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .versionGroupDetails)
+    let moveLearnMethodContainer = try versionGroupDetailsContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .moveLearnMethod)
+    let versionGroupContainer = try versionGroupDetailsContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .versionGroup)
+    
+    self.moveName = try moveContainer.decode(String.self, forKey: .name)
+    self.levelLearnedAt = try versionGroupDetailsContainer.decode(Int.self, forKey: .levelLearnedAt)
+    self.moveLearnMethodName = try moveLearnMethodContainer.decode(String.self, forKey: .name)
+    self.versionGroupName = try versionGroupContainer.decode(String.self, forKey: .name)
   }
   
   func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    var moveContainer = container.nestedContainer(keyedBy: MoveCodingKeys.self, forKey: .move)
-    try moveContainer.encode(self.name, forKey: .name)
+//    var moveContainer = container.nestedContainer(keyedBy: MoveCodingKeys.self, forKey: .move)
+//    var versionGroupDetailsContainer = container.nestedContainer(keyedBy: VersionGroupDetailsCodingKeys.self, forKey: .versionGroupDetails)
+//    var moveLearnMethodContainer = versionGroupDetailsContainer.nestedContainer(keyedBy: MoveLearnMethodCodingKeys.self, forKey: .moveLearnMethod)
+//    var versionGroupContainer = versionGroupDetailsContainer.nestedContainer(keyedBy: VersionGroupCodingKeys.self, forKey: .versionGroup)
+    var moveContainer = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .move)
+    var versionGroupDetailsContainer = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .versionGroupDetails)
+    var moveLearnMethodContainer = versionGroupDetailsContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .moveLearnMethod)
+    var versionGroupContainer = versionGroupDetailsContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .versionGroup)
+    
+    try moveContainer.encode(self.moveName, forKey: .name)
+    try versionGroupDetailsContainer.encode(self.levelLearnedAt, forKey: .levelLearnedAt)
+    try moveLearnMethodContainer.encode(self.moveLearnMethodName, forKey: .name)
+    try versionGroupContainer.encode(self.versionGroupName, forKey: .name)
   }
 }
 
