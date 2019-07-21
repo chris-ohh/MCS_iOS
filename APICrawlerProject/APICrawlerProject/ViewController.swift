@@ -70,6 +70,7 @@ final class ViewController: UIViewController {
         }.resume()
     } else {
       self.crawlerTableView.reloadData()
+
     }
   }
 }

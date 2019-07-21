@@ -68,11 +68,15 @@ struct GameOfThrones: Codable {
   
 }
 
-class TableViewController: UIViewController {
+class TableViewController: UIViewController, UISearchResultsUpdating {
+  
   
   @IBOutlet weak var table: UITableView!
   
   var gameOfThrones: GameOfThrones? = nil
+  var searchController: UISearchController!
+  var episodes: [Episode]? = nil
+  var filteredEpisodes: [Episode]? = nil
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -81,7 +85,21 @@ class TableViewController: UIViewController {
     table.delegate = self
     table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     
+    searchController = UISearchController(searchResultsController: nil)
+    searchController.searchResultsUpdater = self
     
+    // If we are using this same view controller to present the results
+    // dimming it out wouldn't make sense. Should probably only set
+    // this to yes if using another controller to display the search results.
+    searchController.dimsBackgroundDuringPresentation = false
+    
+    searchController.searchBar.sizeToFit()
+    table.tableHeaderView = searchController.searchBar
+    
+    // Sets this view controller as presenting view controller for the search interface
+    definesPresentationContext = true
+    
+
     let gameOfThronesURLString = "https://api.tvmaze.com/shows/82?embed=seasons&embed=episodes"
     guard let url = URL(string: gameOfThronesURLString) else { return }
     
@@ -90,6 +108,8 @@ class TableViewController: UIViewController {
       if let gameOfThrones = try? JSONDecoder().decode(GameOfThrones.self, from: data!) {
         DispatchQueue.main.async {
           self.gameOfThrones = gameOfThrones
+          self.episodes = (self.gameOfThrones?.embedded.episodes)!
+          self.filteredEpisodes = self.episodes
           self.table.reloadData()
         }
         
@@ -97,17 +117,27 @@ class TableViewController: UIViewController {
         print("I guess I'll fail")
       }
       
-      
       }.resume()
     
-
+  }
+  
+  func updateSearchResults(for searchController: UISearchController) {
+    if let searchText = searchController.searchBar.text {
+      filteredEpisodes = searchText.isEmpty ? episodes : episodes?.filter({(episode: Episode?) -> Bool in
+        return episode?.name.range(of: searchText, options: .caseInsensitive) != nil
+      })
+      
+      table.reloadData()
+    }
   }
 
 }
 
 extension TableViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    guard let count = self.gameOfThrones?.embedded.episodes.count else { return 0 }
+    //guard let count = self.gameOfThrones?.embedded.episodes.count else { return 0 }
+    //return count
+    guard let count = filteredEpisodes?.count else { return 0 }
     return count
   }
   
@@ -115,8 +145,12 @@ extension TableViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     
-    cell.textLabel?.text = self.gameOfThrones?.embedded.episodes[indexPath.row].name
-    cell.detailTextLabel?.text = "Season \(self.gameOfThrones!.embedded.episodes[indexPath.row].season) Episode \(self.gameOfThrones!.embedded.episodes[indexPath.row].number)"
+//    cell.textLabel?.text = self.gameOfThrones?.embedded.episodes[indexPath.row].name
+//    cell.detailTextLabel?.text = "Season \(self.gameOfThrones!.embedded.episodes[indexPath.row].season) Episode \(self.gameOfThrones!.embedded.episodes[indexPath.row].number)"
+    
+    
+    cell.textLabel?.text = filteredEpisodes?[indexPath.row].name
+    cell.detailTextLabel?.text = "Season \(filteredEpisodes?[indexPath.row].season) Episode \(filteredEpisodes?[indexPath.row].number)"
     
     return cell
   }
