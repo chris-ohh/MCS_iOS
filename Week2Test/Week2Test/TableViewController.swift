@@ -16,6 +16,28 @@ struct Embedded: Codable {
   }
 }
 
+struct Image: Codable {
+  let medium: URL
+  let original: URL
+  
+  enum ImageCodingKeys: String, CodingKey {
+    case medium
+    case original
+  }
+  
+  init(from decoder: Decoder) throws {
+    let imageContainer = try decoder.container(keyedBy: ImageCodingKeys.self)
+    self.medium = try imageContainer.decode(URL.self, forKey: .medium)
+    self.original = try imageContainer.decode(URL.self, forKey: .original)
+  }
+  
+  func encode(to encoder: Encoder) throws {
+    var imageContainer = encoder.container(keyedBy: ImageCodingKeys.self)
+    try imageContainer.encode(self.medium, forKey: .medium)
+    try imageContainer.encode(self.original, forKey: .original)
+  }
+}
+
 struct Episode: Codable {
   let number: Int
   let name: String
@@ -23,6 +45,7 @@ struct Episode: Codable {
   let airtime: String
   let season: Int
   let summary: String
+  let image: Image
   
   enum EpisodeCodingKeys: String, CodingKey {
     case number
@@ -31,6 +54,7 @@ struct Episode: Codable {
     case airtime
     case season
     case summary
+    case image
   }
   
   init(from decoder: Decoder) throws {
@@ -42,6 +66,7 @@ struct Episode: Codable {
     self.airtime = try episodeContainer.decode(String.self, forKey: .airtime)
     self.season = try episodeContainer.decode(Int.self, forKey: .season)
     self.summary = try episodeContainer.decode(String.self, forKey: .summary)
+    self.image = try episodeContainer.decode(Image.self, forKey: .image)
 
   }
   
@@ -54,6 +79,7 @@ struct Episode: Codable {
     try episodeContainer.encode(self.airtime, forKey: .airtime)
     try episodeContainer.encode(self.season, forKey: .season)
     try episodeContainer.encode(self.summary, forKey: .summary)
+    try episodeContainer.encode(self.image, forKey: .image)
   }
 }
 
@@ -63,9 +89,6 @@ struct GameOfThrones: Codable {
   enum CodingKeys: String, CodingKey {
     case embedded = "_embedded"
   }
-  
-  
-  
 }
 
 class TableViewController: UIViewController, UISearchResultsUpdating {
@@ -88,15 +111,13 @@ class TableViewController: UIViewController, UISearchResultsUpdating {
     searchController = UISearchController(searchResultsController: nil)
     searchController.searchResultsUpdater = self
     
-    // If we are using this same view controller to present the results
-    // dimming it out wouldn't make sense. Should probably only set
-    // this to yes if using another controller to display the search results.
+    // dim background while displaying results
     searchController.dimsBackgroundDuringPresentation = false
     
     searchController.searchBar.sizeToFit()
     table.tableHeaderView = searchController.searchBar
     
-    // Sets this view controller as presenting view controller for the search interface
+    // set this view controller as presenting view controller for the search interface
     definesPresentationContext = true
     
 
@@ -145,12 +166,22 @@ extension TableViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     
-//    cell.textLabel?.text = self.gameOfThrones?.embedded.episodes[indexPath.row].name
-//    cell.detailTextLabel?.text = "Season \(self.gameOfThrones!.embedded.episodes[indexPath.row].season) Episode \(self.gameOfThrones!.embedded.episodes[indexPath.row].number)"
-    
-    
-    cell.textLabel?.text = filteredEpisodes?[indexPath.row].name
-    cell.detailTextLabel?.text = "Season \(filteredEpisodes?[indexPath.row].season) Episode \(filteredEpisodes?[indexPath.row].number)"
+      guard let url = filteredEpisodes?[indexPath.row].image.medium else { return cell }
+      
+      URLSession.shared.dataTask(with: url) { data, response, error in
+        guard
+          let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+          let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+          let data = data, error == nil,
+          let image = UIImage(data: data)
+          else { return }
+        
+        DispatchQueue.main.async() {
+          cell.imageView?.image = image
+          cell.textLabel?.text = self.filteredEpisodes?[indexPath.row].name
+          cell.detailTextLabel?.text = "Season \(self.filteredEpisodes![indexPath.row].season) Episode \(self.filteredEpisodes![indexPath.row].number)"
+        }
+      }.resume()
     
     return cell
   }
@@ -166,8 +197,6 @@ extension TableViewController: UITableViewDelegate {
    
     print(detailViewController)
     navigationController?.pushViewController(detailViewController, animated: true)
-    
-    
+
   }
 }
-
