@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04E1941C22E632E200B9AA6D /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E1941B22E632E200B9AA6D /* Episode.swift */; };
+		04E1941E22E6334900B9AA6D /* Embedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E1941D22E6334900B9AA6D /* Embedded.swift */; };
+		04E1942022E6337100B9AA6D /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E1941F22E6337100B9AA6D /* Image.swift */; };
+		04E1942222E6339400B9AA6D /* GameOfThrones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E1942122E6339400B9AA6D /* GameOfThrones.swift */; };
 		04FE912722E2464900BFEADE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE912622E2464900BFEADE /* AppDelegate.swift */; };
 		04FE912922E2464900BFEADE /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE912822E2464900BFEADE /* TableViewController.swift */; };
 		04FE912C22E2464900BFEADE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04FE912A22E2464900BFEADE /* Main.storyboard */; };
@@ -16,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04E1941B22E632E200B9AA6D /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		04E1941D22E6334900B9AA6D /* Embedded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Embedded.swift; sourceTree = "<group>"; };
+		04E1941F22E6337100B9AA6D /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		04E1942122E6339400B9AA6D /* GameOfThrones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOfThrones.swift; sourceTree = "<group>"; };
 		04FE912322E2464900BFEADE /* Week2Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Week2Test.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04FE912622E2464900BFEADE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04FE912822E2464900BFEADE /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
@@ -58,11 +66,15 @@
 			children = (
 				04FE912622E2464900BFEADE /* AppDelegate.swift */,
 				04FE912822E2464900BFEADE /* TableViewController.swift */,
+				04E1942122E6339400B9AA6D /* GameOfThrones.swift */,
 				04FE913822E248DB00BFEADE /* DetailViewController.swift */,
 				04FE912A22E2464900BFEADE /* Main.storyboard */,
 				04FE912D22E2464B00BFEADE /* Assets.xcassets */,
 				04FE912F22E2464B00BFEADE /* LaunchScreen.storyboard */,
 				04FE913222E2464B00BFEADE /* Info.plist */,
+				04E1941B22E632E200B9AA6D /* Episode.swift */,
+				04E1941D22E6334900B9AA6D /* Embedded.swift */,
+				04E1941F22E6337100B9AA6D /* Image.swift */,
 			);
 			path = Week2Test;
 			sourceTree = "<group>";
@@ -139,6 +151,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				04FE913922E248DB00BFEADE /* DetailViewController.swift in Sources */,
+				04E1942222E6339400B9AA6D /* GameOfThrones.swift in Sources */,
+				04E1942022E6337100B9AA6D /* Image.swift in Sources */,
+				04E1941E22E6334900B9AA6D /* Embedded.swift in Sources */,
+				04E1941C22E632E200B9AA6D /* Episode.swift in Sources */,
 				04FE912922E2464900BFEADE /* TableViewController.swift in Sources */,
 				04FE912722E2464900BFEADE /* AppDelegate.swift in Sources */,
 			);

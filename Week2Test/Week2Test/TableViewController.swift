@@ -8,90 +8,7 @@
 
 import UIKit
 
-struct Embedded: Codable {
-  let episodes: [Episode]
-  
-  enum EmbeddedCodingKeys: String, CodingKey {
-    case episodes
-  }
-}
-
-struct Image: Codable {
-  let medium: URL
-  let original: URL
-  
-  enum ImageCodingKeys: String, CodingKey {
-    case medium
-    case original
-  }
-  
-  init(from decoder: Decoder) throws {
-    let imageContainer = try decoder.container(keyedBy: ImageCodingKeys.self)
-    self.medium = try imageContainer.decode(URL.self, forKey: .medium)
-    self.original = try imageContainer.decode(URL.self, forKey: .original)
-  }
-  
-  func encode(to encoder: Encoder) throws {
-    var imageContainer = encoder.container(keyedBy: ImageCodingKeys.self)
-    try imageContainer.encode(self.medium, forKey: .medium)
-    try imageContainer.encode(self.original, forKey: .original)
-  }
-}
-
-struct Episode: Codable {
-  let number: Int
-  let name: String
-  let airdate: String
-  let airtime: String
-  let season: Int
-  let summary: String
-  let image: Image
-  
-  enum EpisodeCodingKeys: String, CodingKey {
-    case number
-    case name
-    case airdate
-    case airtime
-    case season
-    case summary
-    case image
-  }
-  
-  init(from decoder: Decoder) throws {
-    let episodeContainer = try decoder.container(keyedBy: EpisodeCodingKeys.self)
-
-    self.number = try episodeContainer.decode(Int.self, forKey: .number)
-    self.name = try episodeContainer.decode(String.self, forKey: .name)
-    self.airdate = try episodeContainer.decode(String.self, forKey: .airdate)
-    self.airtime = try episodeContainer.decode(String.self, forKey: .airtime)
-    self.season = try episodeContainer.decode(Int.self, forKey: .season)
-    self.summary = try episodeContainer.decode(String.self, forKey: .summary)
-    self.image = try episodeContainer.decode(Image.self, forKey: .image)
-
-  }
-  
-  func encode(to encoder: Encoder) throws {
-    var episodeContainer = encoder.container(keyedBy: EpisodeCodingKeys.self)
-    
-    try episodeContainer.encode(self.number, forKey: .number)
-    try episodeContainer.encode(self.name, forKey: .name)
-    try episodeContainer.encode(self.airdate, forKey: .airdate)
-    try episodeContainer.encode(self.airtime, forKey: .airtime)
-    try episodeContainer.encode(self.season, forKey: .season)
-    try episodeContainer.encode(self.summary, forKey: .summary)
-    try episodeContainer.encode(self.image, forKey: .image)
-  }
-}
-
-struct GameOfThrones: Codable {
-  let embedded: Embedded
-  
-  enum CodingKeys: String, CodingKey {
-    case embedded = "_embedded"
-  }
-}
-
-class TableViewController: UIViewController, UISearchResultsUpdating {
+class TableViewController: UIViewController {
   
   @IBOutlet weak var table: UITableView!
   
@@ -157,9 +74,11 @@ class TableViewController: UIViewController, UISearchResultsUpdating {
       }.resume()
     }
   }
-  
-  func updateSearchResults(for searchController: UISearchController) {
+}
 
+extension TableViewController: UISearchResultsUpdating {
+  func updateSearchResults(for searchController: UISearchController) {
+    
     if let searchText = searchController.searchBar.text {
       if searchText.isEmpty {
         filteredSectionedEpisodes = sectionedEpisodes
