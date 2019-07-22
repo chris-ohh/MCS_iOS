@@ -11,8 +11,6 @@ import UIKit
 final class ViewController: UIViewController {
   
   @IBOutlet weak var crawlerTableView: UITableView!
-  
-  // have to set title
   @IBOutlet weak var navBarTitle: UINavigationItem!
   @IBOutlet weak var forwardButton: UIBarButtonItem!
   
@@ -56,8 +54,8 @@ final class ViewController: UIViewController {
     
     navBarTitle.title = titleString
     
-    if let url = url // received a URL, not an array
-    {
+    if let url = url {
+      // received a URL, not an array
       URLSession.shared.dataTask(with: url) { (data, _, _) in
         guard let data = data,
           let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
@@ -70,65 +68,55 @@ final class ViewController: UIViewController {
         }.resume()
     } else {
       self.crawlerTableView.reloadData()
-
     }
   }
 }
 
 extension ViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if let url = url // received a URL, not an array
-    {
-      return dictionary.count
-    } else if array.count > 0 {
+    if array.count > 0 {
       return array.count
-    }
-    return dictionary.count
+    } else { return dictionary.count }
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-    //Update the labels here
-    
-    // array
+
     if dictionary.count == 0 && array.count > 0 {
+      // array
       cell.textLabel?.text = "Array Index \(indexPath.row)"
       
-    } // dictionary
-    else {
+    } else {
+      // dictionary
       let keys = Array(dictionary.keys)
       cell.textLabel?.text = keys[indexPath.row]
       
       guard let type = APITypes(value: dictionary[keys[indexPath.row]]) else { return cell }
 
-      
       switch type {
       case .boolean:
         guard let detailText = dictionary[keys[indexPath.row]] as? Bool else { return cell }
         cell.detailTextLabel?.text = "\(detailText)"
       case .array:
-        // array acts like a link that takes you to another view
         guard let array = dictionary[keys[indexPath.row]] as? [Any] else { return cell }
         cell.detailTextLabel?.text = "Array of size: \(array.count)"
       case .dictionary:
-        // dictionary acts like a link that takes you to another view
         guard var dictionary = dictionary[keys[indexPath.row]] as? [String: Any?] else { return cell }
         
-        if let urlString = dictionary["url"] as? String // this dictionary has a url
-        {
-          let url = URL(string: urlString)
-          URLSession.shared.dataTask(with: url!) { (data, _, _) in
+        if let urlString = dictionary["url"] as? String {
+          guard let url = URL(string: urlString) else { return cell }
+          URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data,
               let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
               let jsonDictionary = jsonObject as? [String: Any] else { return }
             dictionary = jsonDictionary
-            DispatchQueue.main.async { // make sure you're on the main thread here
+            DispatchQueue.main.async {
               cell.detailTextLabel?.text = "Dictionary of size: \(dictionary.keys.count)"
             }
           }.resume()
-
-        } // this dictionary doesnt have a url field
+        }
         else {
+          // this dictionary doesnt have a url field
           cell.detailTextLabel?.text = "Dictionary of size: \(dictionary.keys.count)"
         }
       case .null:
@@ -141,9 +129,7 @@ extension ViewController: UITableViewDataSource {
         guard let detailText = dictionary[keys[indexPath.row]] as? String else { return cell }
         cell.detailTextLabel?.text = "\(detailText)"
       }
-    
     }
-    
     return cell
   }
 }
@@ -151,33 +137,29 @@ extension ViewController: UITableViewDataSource {
 extension ViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    let nextViewController = storyboard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
+    guard let nextViewController = storyboard.instantiateViewController(withIdentifier: "ViewController") as? ViewController else { return }
     
-    // is array
     if array.count > 0 {
+      // is array
       // clicked dictionary
       if let value = array[indexPath.row] as? [String: Any] {
         // there is a url field
-        
         if (value["url"] != nil) {
-          nextViewController.url = URL(string: value["url"] as! String)
-          
+          guard let urlString = value["url"] as? String else { return }
+          let url = URL(string: urlString)
+          nextViewController.url = url
+          nextViewController.titleString = "Array Index \(indexPath.row)"
           navigationController?.pushViewController(nextViewController, animated: true)
-
         } else {
           // there is no url field
           nextViewController.dictionary = value
           nextViewController.url = URL(string: "")
-         
-         nextViewController.titleString = "Array Index \(indexPath.row)"
-
+          nextViewController.titleString = "Array Index \(indexPath.row)"
           navigationController?.pushViewController(nextViewController, animated: true)
-
         }
       } else { return }
-      
-    } // is dictionary
-    else {
+    } else {
+      // is dictionary
       // is url field, and only a url field
       let keys = Array(dictionary.keys)
       if let value = dictionary[keys[indexPath.row]] as? String {
@@ -185,46 +167,36 @@ extension ViewController: UITableViewDelegate {
         if value.hasPrefix("https://pokeapi.co/") {
           let url = URL(string: value)
           nextViewController.url = url
-          
           nextViewController.titleString = keys[indexPath.row]
-
           navigationController?.pushViewController(nextViewController, animated: true)
         } else { return }
-
       } // is nested dictionary with a url field
       else if let value = dictionary[keys[indexPath.row]] as? [String: Any] {
-        
-        // url is a string
+        // is nested dictionary with a url field
         if let urlString = value["url"] as? String {
-          let url = URL(string: urlString)
+        // url is a string
+        let url = URL(string: urlString)
           
-          nextViewController.url = url
-          nextViewController.titleString = keys[indexPath.row]
-          navigationController?.pushViewController(nextViewController, animated: true)
-        } else {
-          // dictionary with no url
-          nextViewController.dictionary = value
-          nextViewController.titleString = keys[indexPath.row]
-          navigationController?.pushViewController(nextViewController, animated: true)
-        }
-
-      }
-        // clicked array in dictionary
-      else if let value = dictionary[keys[indexPath.row]] as? [Any] {
-        nextViewController.array = value
-        nextViewController.url = URL(string: "")
-        
+        nextViewController.url = url
         nextViewController.titleString = keys[indexPath.row]
-
         navigationController?.pushViewController(nextViewController, animated: true)
-
+      } else {
+        // dictionary with no url
+        nextViewController.dictionary = value
+        nextViewController.titleString = keys[indexPath.row]
+        navigationController?.pushViewController(nextViewController, animated: true)
       }
+    } else if let value = dictionary[keys[indexPath.row]] as? [Any] {
+      // clicked array in dictionary
+      nextViewController.array = value
+      nextViewController.url = URL(string: "")
+      nextViewController.titleString = keys[indexPath.row]
+      navigationController?.pushViewController(nextViewController, animated: true)
     }
-    
-  }  
+  }
+}
   
   @IBAction func forwardButton(_ sender: Any) {
-
     navigationController?.popToRootViewController( animated: true )
   }
 }
