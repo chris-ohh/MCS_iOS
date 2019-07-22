@@ -93,13 +93,13 @@ struct GameOfThrones: Codable {
 
 class TableViewController: UIViewController, UISearchResultsUpdating {
   
-  
   @IBOutlet weak var table: UITableView!
   
   var gameOfThrones: GameOfThrones? = nil
   var searchController: UISearchController!
   var episodes: [Episode]? = nil
   var filteredEpisodes: [Episode]? = nil
+  var sectionedEpisodes: [Int: [Episode]] = [:]
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -120,7 +120,15 @@ class TableViewController: UIViewController, UISearchResultsUpdating {
     // set this view controller as presenting view controller for the search interface
     definesPresentationContext = true
     
-
+    sectionedEpisodes[1] = []
+    sectionedEpisodes[2] = []
+    sectionedEpisodes[3] = []
+    sectionedEpisodes[4] = []
+    sectionedEpisodes[5] = []
+    sectionedEpisodes[6] = []
+    sectionedEpisodes[7] = []
+    sectionedEpisodes[8] = []
+    
     let gameOfThronesURLString = "https://api.tvmaze.com/shows/82?embed=seasons&embed=episodes"
     guard let url = URL(string: gameOfThronesURLString) else { return }
     
@@ -129,8 +137,21 @@ class TableViewController: UIViewController, UISearchResultsUpdating {
       if let gameOfThrones = try? JSONDecoder().decode(GameOfThrones.self, from: data!) {
         DispatchQueue.main.async {
           self.gameOfThrones = gameOfThrones
-          self.episodes = (self.gameOfThrones?.embedded.episodes)!
-          self.filteredEpisodes = self.episodes
+          if let episodes = (self.gameOfThrones?.embedded.episodes) {
+            self.episodes = episodes
+            self.filteredEpisodes = self.episodes
+            
+            self.sectionedEpisodes[1] = episodes.filter{ $0.season == 1 }
+            self.sectionedEpisodes[2] = episodes.filter{ $0.season == 2 }
+            self.sectionedEpisodes[3] = episodes.filter{ $0.season == 3 }
+            self.sectionedEpisodes[4] = episodes.filter{ $0.season == 4 }
+            self.sectionedEpisodes[5] = episodes.filter{ $0.season == 5 }
+            self.sectionedEpisodes[6] = episodes.filter{ $0.season == 6 }
+            self.sectionedEpisodes[7] = episodes.filter{ $0.season == 7 }
+            self.sectionedEpisodes[8] = episodes.filter{ $0.season == 8 }
+            
+          }
+          
           self.table.reloadData()
         }
         
@@ -155,19 +176,38 @@ class TableViewController: UIViewController, UISearchResultsUpdating {
 }
 
 extension TableViewController: UITableViewDataSource {
+  
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return sectionedEpisodes.count
+  }
+  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     //guard let count = self.gameOfThrones?.embedded.episodes.count else { return 0 }
     //return count
-    guard let count = filteredEpisodes?.count else { return 0 }
-    return count
+    var dicKeys = Array(sectionedEpisodes.keys)
+    dicKeys.sort(by: <)
+    
+    if let count = self.sectionedEpisodes[dicKeys[section]]?.count {
+     // print("section \(dicKeys[section]) has \(count) rows")
+      if self.sectionedEpisodes.count > 0 {
+        return count
+      }
+    }
+    return 0
   }
   
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+      let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+     //let cell = table.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! UITableViewCell
+    //let cell = table.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as UITableViewCell
+      var dicKeys = Array(sectionedEpisodes.keys)
+      dicKeys.sort(by: <)
     
-      guard let url = filteredEpisodes?[indexPath.row].image.medium else { return cell }
-      
+      //guard let url = filteredEpisodes?[indexPath.row].image.medium else { return cell }
+    guard let url = sectionedEpisodes[dicKeys[indexPath.section]]?[indexPath.row].image.medium else { return cell }
+    
+    //if sectionedEpisodes.count > 0 {
       URLSession.shared.dataTask(with: url) { data, response, error in
         guard
           let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
@@ -178,12 +218,28 @@ extension TableViewController: UITableViewDataSource {
         
         DispatchQueue.main.async() {
           cell.imageView?.image = image
-          cell.textLabel?.text = self.filteredEpisodes?[indexPath.row].name
-          cell.detailTextLabel?.text = "Season \(self.filteredEpisodes![indexPath.row].season) Episode \(self.filteredEpisodes![indexPath.row].number)"
+          //cell.textLabel?.text = self.filteredEpisodes?[indexPath.row].name
+          //cell.detailTextLabel?.text = "Episode \(self.filteredEpisodes![indexPath.row].number)"
+          print("section number: \(dicKeys[indexPath.section]) row number: \(indexPath.row)")
+          cell.textLabel?.text = self.sectionedEpisodes[dicKeys[indexPath.section]]![indexPath.row].name
+          
+          cell.detailTextLabel?.text = "Episode \(self.sectionedEpisodes[dicKeys[indexPath.section]]![indexPath.row].number)"
         }
       }.resume()
+    //}
     
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    
+    //return "Season \(section + 1)"
+    var dicKeys = Array(sectionedEpisodes.keys)
+    dicKeys.sort(by: <)
+    if dicKeys.count != 0 {
+      return "Season \(dicKeys[section])"
+    } else { return "" }
+    //return "\(Array(sectionedEpisodes.keys)[section])"
   }
 }
 
@@ -195,7 +251,6 @@ extension TableViewController: UITableViewDelegate {
     
     detailViewController.episode = self.gameOfThrones!.embedded.episodes[indexPath.row]
    
-    print(detailViewController)
     navigationController?.pushViewController(detailViewController, animated: true)
 
   }
