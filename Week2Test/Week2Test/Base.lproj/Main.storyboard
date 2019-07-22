@@ -49,6 +49,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Episode Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="fbh-Ta-qWM">
+                                <rect key="frame" x="20" y="327" width="374" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Airtime" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jxy-eu-b9b">
                                 <rect key="frame" x="20" y="444" width="374" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -88,13 +95,16 @@
                                 <rect key="frame" x="87" y="150" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Episode Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="fbh-Ta-qWM">
-                                <rect key="frame" x="20" y="327" width="374" height="21"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adq-K3-SXP">
+                                <rect key="frame" x="304" y="97" width="90" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <state key="normal" title="Favorite">
+                                    <color key="titleColor" red="1" green="0.64873965499999997" blue="0.93557540800000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="clicked:" destination="e4I-v4-qKi" eventType="touchUpInside" id="7lx-Hi-QwT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="yES-Xo-33Z"/>
@@ -104,6 +114,7 @@
                         <outlet property="airTimeLabel" destination="jxy-eu-b9b" id="RkM-xD-OKU"/>
                         <outlet property="episodeNumberLabel" destination="ZNP-vL-Ulf" id="Tga-ve-9ph"/>
                         <outlet property="episodeTitleLabel" destination="fbh-Ta-qWM" id="ZNs-lm-YCi"/>
+                        <outlet property="favoriteButton" destination="adq-K3-SXP" id="yMm-5m-QJS"/>
                         <outlet property="imageView" destination="jlR-5j-ubM" id="ZYv-VR-Kbi"/>
                         <outlet property="seasonLabel" destination="HbG-Uf-ZZ8" id="l2i-Jw-5t4"/>
                         <outlet property="summaryTextView" destination="lql-HR-g0z" id="Giy-j4-ZR4"/>

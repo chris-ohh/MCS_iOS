@@ -24,7 +24,11 @@ class DetailViewController: UIViewController {
   
   @IBOutlet weak var imageView: UIImageView!
   
+  @IBOutlet weak var favoriteButton: UIButton!
+  
   var episode: Episode?
+  var favorited: Bool = false
+  var favorites: [Data] = []
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -37,8 +41,16 @@ class DetailViewController: UIViewController {
         let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
         let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
         let data = data, error == nil,
-        let image = UIImage(data: data)
-        else { return }
+        let image = UIImage(data: data) else {
+          self.episodeTitleLabel.text = "Episode Title: \(episode.name)"
+          self.airDateLabel.text = "Premier Date: \(episode.airdate)"
+          self.airTimeLabel.text = "Airtime: \(episode.airtime)"
+          self.seasonLabel.text = "Season: \(episode.season)"
+          self.episodeNumberLabel.text = "Episode Number: \(episode.number)"
+          self.summaryTextView.text = "Summary: \(String((episode.summary.dropLast(4).dropFirst(3))))"
+          
+          return
+      }
       
       DispatchQueue.main.async() {
         self.episodeTitleLabel.text = "Episode Title: \(episode.name)"
@@ -49,17 +61,23 @@ class DetailViewController: UIViewController {
         self.summaryTextView.text = "Summary: \(String((episode.summary.dropLast(4).dropFirst(3))))"
         self.imageView.image = image
       }
-      }.resume()
-    
-    
-//    episodeTitleLabel.text = "Episode Title: \(episode!.name)"
-//    airDateLabel.text = "Premier Date: \(episode!.airdate)"
-//    airTimeLabel.text = "Airtime: \(episode!.airtime)"
-//    seasonLabel.text = "Season: \(episode!.season)"
-//    episodeNumberLabel.text = "Episode Number: \(episode!.number)"
-//    summaryTextView.text = "Summary: \(String((episode?.summary.dropLast(4).dropFirst(3))!))"
-//    imageView.image = episode!.image.medium
-  
+    }.resume()
   }
   
+  @IBAction func clicked(_ sender: Any) {
+    let encoder = JSONEncoder()
+    guard let data = try? encoder.encode(self.episode) else { return }
+    
+    favorited = !favorited
+    
+    favorites.append(data)
+    
+    if favorited {
+      favoriteButton.setTitle("Favorited!", for: .normal)
+      UserDefaults.standard.set(favorites, forKey: "favorites")
+    } else {
+      favoriteButton.setTitle("Favorite", for: .normal)
+      UserDefaults.standard.removeObject(forKey: "favorites")
+    }
+  }
 }
