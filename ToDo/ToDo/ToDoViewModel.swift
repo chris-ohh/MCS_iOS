@@ -30,10 +30,11 @@ public class ToDoViewModel {
     return tasks[index]
   }
   
-  func delete(at index: Int) {
-    guard let task = getTask(at: index) else { return }
+  func delete(at index: Int) -> [Task]? {
+    guard let task = getTask(at: index) else { return nil }
     manager.delete(task: task)
     tasks.remove(at: index)
+    return tasks
   }
   
   func getAllTasks(named taskDescription: String) -> [Task] {
