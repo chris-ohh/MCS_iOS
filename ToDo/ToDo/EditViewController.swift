@@ -31,12 +31,13 @@ class EditViewController: UIViewController {
       
     if sender.tag == 0 {
       // Edit
-      if let updateString = editTextfield.text {
-        delegate?.update(to: updateString)
-      } else if sender.tag == 1 {
-          // Completed
-          delegate?.delete()
-      }
-      navigationController?.popViewController(animated: true)
+      guard let updateString = editTextfield.text else { return }
+      delegate?.update(to: updateString)
+      
+    } else if sender.tag == 1 {
+      // Completed
+      delegate?.delete()
     }
+    navigationController?.popViewController(animated: true)
+  }
 }
