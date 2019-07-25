@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     
   @IBOutlet weak var toDo: UITableView!
 
-  let manager = CoreDataManager()
+  let toDoViewModel = ToDoViewModel()
     
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -20,23 +20,24 @@ class ViewController: UIViewController {
     toDo.delegate = self
     toDo.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     
-    manager.createNewTasks(with: "Wake Up")
-    manager.createNewTasks(with: "Eat Breakfast")
-    manager.createNewTasks(with: "Take the MARTA")
-    manager.createNewTasks(with: "Walk to work")
-    manager.createNewTasks(with: "Take candy from the jar")
+    toDoViewModel.createNewTasks(with: "Wake Up")
+    toDoViewModel.createNewTasks(with: "Eat Breakfast")
+    toDoViewModel.createNewTasks(with: "Take the MARTA")
+    toDoViewModel.createNewTasks(with: "Walk to work")
+    toDoViewModel.createNewTasks(with: "Take candy from the jar")
+    print(toDoViewModel.getAllTasks())
   }
 }
 
 extension ViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return manager.getNumberOfTasks()
+    return toDoViewModel.getNumberOfTasks()
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
       
-    cell.textLabel?.text = manager.getTask(at: indexPath.row)?.taskDescription
+    cell.textLabel?.text = toDoViewModel.getTask(at: indexPath.row)?.taskDescription
     return cell
   }
 }
@@ -46,7 +47,7 @@ extension ViewController: UITableViewDelegate {
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     let editViewController = storyboard.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
       
-    editViewController.stringToEdit = manager.getTask(at: indexPath.row)?.taskDescription
+    editViewController.stringToEdit = toDoViewModel.getTask(at: indexPath.row)?.taskDescription
     editViewController.delegate = self
         
     navigationController?.pushViewController(editViewController, animated: true)
@@ -57,7 +58,7 @@ extension ViewController: EditViewControllerDelegate {
   func update(to newValue: String) {
     guard let updatedIndex = toDo.indexPathForSelectedRow else { return }
       
-    manager.update(at: updatedIndex.row, with: newValue)
+    toDoViewModel.update(at: updatedIndex.row, with: newValue)
       
     toDo.reloadRows(at: [updatedIndex], with: .fade)
   }
@@ -65,7 +66,7 @@ extension ViewController: EditViewControllerDelegate {
   func delete() {
     guard let deletedIndex = toDo.indexPathForSelectedRow else { return }
       
-    manager.delete(at: deletedIndex.row)
+    toDoViewModel.delete(at: deletedIndex.row)
       
     toDo.deleteRows(at: [deletedIndex], with: .fade)
   }
