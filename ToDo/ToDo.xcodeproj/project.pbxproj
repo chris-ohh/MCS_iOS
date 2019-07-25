@@ -15,8 +15,7 @@
 		0441321022D8C6C800AFDBC9 /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0441320F22D8C6C800AFDBC9 /* EditViewController.swift */; };
 		044DD87B22E2196D0068E568 /* TaskModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 044DD87922E2196D0068E568 /* TaskModel.xcdatamodeld */; };
 		044DD87D22E219D30068E568 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044DD87C22E219D30068E568 /* CoreDataManager.swift */; };
-		044DD87F22E21BA50068E568 /* Task+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044DD87E22E21BA50068E568 /* Task+CoreDataClass.swift */; };
-		044DD88122E21BB80068E568 /* Task+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044DD88022E21BB80068E568 /* Task+CoreDataProperties.swift */; };
+		04E1955B22E94D3800B9AA6D /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E1955A22E94D3800B9AA6D /* TaskViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,8 +29,7 @@
 		0441320F22D8C6C800AFDBC9 /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		044DD87A22E2196D0068E568 /* TaskModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskModel.xcdatamodel; sourceTree = "<group>"; };
 		044DD87C22E219D30068E568 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		044DD87E22E21BA50068E568 /* Task+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataClass.swift"; sourceTree = "<group>"; };
-		044DD88022E21BB80068E568 /* Task+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		04E1955A22E94D3800B9AA6D /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,8 +71,7 @@
 				0441320F22D8C6C800AFDBC9 /* EditViewController.swift */,
 				044131FF22D8C6AB00AFDBC9 /* ViewController.swift */,
 				044DD87C22E219D30068E568 /* CoreDataManager.swift */,
-				044DD87E22E21BA50068E568 /* Task+CoreDataClass.swift */,
-				044DD88022E21BB80068E568 /* Task+CoreDataProperties.swift */,
+				04E1955A22E94D3800B9AA6D /* TaskViewModel.swift */,
 			);
 			path = ToDo;
 			sourceTree = "<group>";
@@ -154,8 +151,7 @@
 				044131FE22D8C6AB00AFDBC9 /* AppDelegate.swift in Sources */,
 				044DD87B22E2196D0068E568 /* TaskModel.xcdatamodeld in Sources */,
 				044DD87D22E219D30068E568 /* CoreDataManager.swift in Sources */,
-				044DD88122E21BB80068E568 /* Task+CoreDataProperties.swift in Sources */,
-				044DD87F22E21BA50068E568 /* Task+CoreDataClass.swift in Sources */,
+				04E1955B22E94D3800B9AA6D /* TaskViewModel.swift in Sources */,
 				0441321022D8C6C800AFDBC9 /* EditViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
