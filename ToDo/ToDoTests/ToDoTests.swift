@@ -25,15 +25,9 @@ class ToDoTests: XCTestCase {
 
   func testCreateTask() {
     let task = sut.createNewTasks(with: "test task")
-    var isTask : Bool?
-      if let test = task as? Task {
-        isTask = true
-      }
-      else {
-        isTask = false
-      }
     
-    XCTAssertTrue(isTask!)
+    XCTAssertTrue(task is Task)
+    XCTAssertEqual("test task", task?.taskDescription)
   }
   
   func testUpdate() {
