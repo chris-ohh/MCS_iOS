@@ -22,7 +22,7 @@ final class CoreDataManager {
   }
   
   @discardableResult
-  func createNewTasks(with taskDescription: String) -> Task? {
+  func createNewTasks() -> Task? {
     guard let description = NSEntityDescription.entity(forEntityName: "Task", in: context) else { return nil }
     let task = Task(entity: description, insertInto: context)
     return task

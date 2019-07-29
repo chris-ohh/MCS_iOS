@@ -61,6 +61,7 @@ final class ViewController: UIViewController {
           let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
           let jsonDictionary = jsonObject as? [String: Any] else { return }
         self.dictionary = jsonDictionary
+        print(jsonDictionary)
         
         DispatchQueue.main.async {
           self.crawlerTableView.reloadData()
